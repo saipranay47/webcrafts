@@ -1,0 +1,51 @@
+{
+    "projectId": "64731016883a2d49ac15",
+    "projectName": "WebCrafts",
+    "functions": [
+        {
+            "$id": "648077c945bd1641f0a1",
+            "name": "likeCraftById",
+            "runtime": "node-16.0",
+            "path": "functions/likeCraftById",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        },
+        {
+            "$id": "64815bef40defaa8e014",
+            "name": "getTotalLikes",
+            "runtime": "node-16.0",
+            "path": "functions/getTotalLikes",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        },
+        {
+            "$id": "64817203f011cd5f33a3",
+            "name": "getUser",
+            "runtime": "node-16.0",
+            "path": "functions/getUser",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        }
+    ]
+}
