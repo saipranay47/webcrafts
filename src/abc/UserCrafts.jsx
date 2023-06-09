@@ -27,7 +27,7 @@ export default function UserCrafts({ userid }) {
   }, [userid]);
 
   return (
-    <div className="flex w-full gap-5 justify-center items-center flex-wrap mt-10 px-10">
+    <div className="flex w-full gap-5 justify-center items-center flex-wrap px-10">
       {userCrafts.map((craft) => (
         <Card
           key={craft.$id}

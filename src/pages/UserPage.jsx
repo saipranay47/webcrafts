@@ -6,6 +6,7 @@ import ProfileEditable from "../components/ProfileTop";
 import UserCrafts from "../abc/UserCrafts";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import Footer from "../components/Footer";
 
 function UserPage() {
   const { user } = useUser();
@@ -50,6 +51,7 @@ function UserPage() {
           <div>
             <ProfileEditable auth={data} />
             {/* Render userCrafts here */}
+            <hr className=" mt-10 mb-20" />
             <UserCrafts userid={id} />
           </div>
         ) : (
@@ -58,6 +60,7 @@ function UserPage() {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 }

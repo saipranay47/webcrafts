@@ -5,6 +5,8 @@ import { Header } from "../components/Header";
 import { Container } from "../components/Container";
 import Card from "../components/Card";
 import ListAllCrafts from "../components/ListAllCrafts";
+import Footer from "../components/Footer";
+
 function Home() {
   // Inside your component
   const { user } = useUser();
@@ -53,6 +55,7 @@ function Home() {
         <br />
         <ListAllCrafts />
       </Container>
+      <Footer/>
     </div>
   );
 }

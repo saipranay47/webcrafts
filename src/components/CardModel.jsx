@@ -25,6 +25,7 @@ function CardModel({
   craftid,
   likes,
   likeCount,
+  profilePic,
   ...props
 }) {
   const [liked, setLiked] = useState(false);
@@ -104,7 +105,7 @@ function CardModel({
         <div className="sticky top-20 flex md:flex-col gap-4 h-[40px] ">
           <Link to={`/users/${userid}`}>
             <img
-              src={avatar}
+              src={profilePic}
               alt=""
               className="h-[40px] w-[40px] rounded-full"
             />
@@ -121,7 +122,7 @@ function CardModel({
           </div>
         </div>
       </div>
-      <Container className="md:px-[68px] md:py-[120px] md:pb-[0px] p-5 pt-10">
+      <Container className="md:px-[68px] md:py-[120px] md:pb-[0px] p-5 pt-10 mb-10">
         <div className="mx-auto max-w-7xl">
           <div className="felx md:mx-[44px]">
             <div className="w-full px-6 md:px-20 m-auto flex flex-col md:flex-row justify-between items-end min-md:items-start ">
@@ -132,7 +133,7 @@ function CardModel({
               <div className="right-[40px] lg:w-[40px] md:h-full  h-[40px] hidden max-sm:block">
                 <div className="sticky top-20 flex md:flex-col gap-4 h-[40px] ">
                   <img
-                    src={avatar}
+                    src={profilePic}
                     alt=""
                     className="h-[40px] w-[40px] rounded-full"
                   />
@@ -149,14 +150,17 @@ function CardModel({
                 </div>
               </div>
               <div className="flex gap-4 w-max mt-5 sm:mt-0 flex-wrap items-end">
-                <div
+                <button
                   className="group inline-flex items-center justify-center rounded-full py-2 px-4 text-sm font-semibold focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 gap-1 bg-gray-200 cursor-pointer"
                   style={{
                     backgroundImage: liked ? `url(${buttonbg})` : "none",
                     backgroundSize: "cover",
                     color: liked ? "white" : "black",
+                    cursor: !user ? "not-allowed" : "pointer",
                   }}
                   onClick={handleLikeClick}
+                  disabled={!user}
+                  title={!user ? "Please log in to like" : ""}
                 >
                   {likeLoading ? (
                     // spinner
@@ -190,7 +194,8 @@ function CardModel({
                       <p>{data.likeCount}</p>
                     </span>
                   )}
-                </div>
+                </button>
+
                 <ButtonUrl color="white" href={liveLink}>
                   Live site
                 </ButtonUrl>

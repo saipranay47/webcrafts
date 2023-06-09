@@ -10,8 +10,11 @@ export default {
       screens: {
         laptop: "1450px",
       },
+      aspectRatio: {
+        '1/4' : '1.4',
+      }
     },
   },
-  plugins: [require("@tailwindcss/line-clamp"), require("@tailwindcss/forms")],
+  plugins: [require("@tailwindcss/forms"),require("@tailwindcss/line-clamp")],
 };
 

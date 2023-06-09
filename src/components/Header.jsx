@@ -18,6 +18,7 @@ function ProfileMenu() {
   React.useEffect(() => {
     if (user) {
       setSignedIn(true);
+      console.log(user);
     } else {
       setSignedIn(false);
     }
@@ -40,12 +41,22 @@ function ProfileMenu() {
           {SignedIn ? (
             <div className="relative ml-6 hidden md:block">
               <Popover.Button className="flex items-center group focus:outline-none relative">
-                <div className="h-[36px] w-auto">
-                  <img
-                    src={avatar}
-                    alt=""
-                    className="h-full w-auto rounded-full"
-                  />
+                <div className="h-[36px] w-[36px]">
+                  {user.prefs.photo ? (
+                    <img
+                      src={user.prefs.photo}
+                      alt=""
+                      className="h-full w-auto rounded-full"
+                    />
+                  ) : (
+                    <svg
+                      className=" text-gray-300 w-full h-full bg-gray-500 rounded-full object-cover"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  )}
                 </div>
               </Popover.Button>
               <Transition.Root>
@@ -62,17 +73,35 @@ function ProfileMenu() {
                     <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
                       <div className="relative grid gap-8 bg-[#000] p-7 w-full">
                         <Link to="/profile">
-                          <div className="flex items-center space-x-4">
-                            <img
-                              src={avatar}
-                              alt=""
-                              className="h-10 w-10 rounded-full"
-                            />
-                            {user && (
+                          {user && (
+                            <div className="flex items-center space-x-4">
+                              {user.prefs.photo ? (
+                                <img
+                                  src={user.prefs.photo}
+                                  alt=""
+                                  className="h-10 w-10 rounded-full"
+                                />
+                              ) : (
+                                <svg
+                                  className=" text-gray-300 w-10 h-10 bg-gray-500 rounded-full object-cover"
+                                  fill="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                                </svg>
+                              )}
                               <span className="text-xl">{user.name}</span>
-                            )}
-                          </div>
+                            </div>
+                          )}
                         </Link>
+
+                        <ButtonLink
+                          color="white"
+                          href="/profileupdate"
+                          className="w-full"
+                        >
+                          <span>Edit Profile</span>
+                        </ButtonLink>
                         <Button color="white" onClick={handleLogout}>
                           <span>Sign out</span>
                         </Button>
@@ -108,6 +137,12 @@ function MobileNavigation() {
       setSignedIn(false);
     }
   }, [user]);
+
+  const handleLogout = async () => {
+    await logout();
+    alert("logout");
+    navigate("/login");
+  };
 
   return (
     <Popover>
@@ -187,9 +222,9 @@ function MobileNavigation() {
                     <Link to="/user">
                       <div className="h-[32px] w-auto flex gap-3 items-center">
                         <img
-                          src={avatar}
+                          src={user.prefs.photo}
                           alt=""
-                          className="h-full w-auto rounded-full"
+                          className="h-[32px] w-[32px] rounded-full"
                         />
                         {user && (
                           <span className="block w-full text-xl">
@@ -198,6 +233,22 @@ function MobileNavigation() {
                         )}
                       </div>
                     </Link>
+
+                    <ButtonLink
+                      color="white"
+                      href="/profileupdate"
+                      className="w-full mt-2"
+                    >
+                      <span>Edit Profile</span>
+                    </ButtonLink>
+
+                    <Button
+                      color="white"
+                      className="mt-2 w-full"
+                      onClick={handleLogout}
+                    >
+                      <span>Sign out</span>
+                    </Button>
                   </li>
                 ) : (
                   <li className="border-t border-slate-300/40 pt-4">

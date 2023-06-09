@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { storage } from "../utils/appwrite";
 import { Transition } from "@headlessui/react";
 import CardModel from "./CardModel";
+import profilePlaceholder from "../images/profilePlaceholder.jpeg";
+import axios from "axios";
 
 function Card({
   title,
@@ -20,6 +22,7 @@ function Card({
   const [isHovered, setIsHovered] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); // New state for modal open/close
+  const [profilepic, setProfilepic] = useState(null);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -47,6 +50,33 @@ function Card({
       loadImageUrl();
     }
   }, [image]);
+
+  useEffect(() => {
+    axios
+        .get(`https://cloud.appwrite.io/v1/users/${userid}/prefs`, {
+          headers: {
+            "Content-Type": "application/json",
+            "X-Appwrite-Response-Format": "1.0.0",
+            "X-Appwrite-Project": "64731016883a2d49ac15",
+            "X-Appwrite-Key":
+              "57db0f34f2b14a4b380d1d252f8169e995c1f946727a34269107bdffa2b3423ac9543392cca93da16bfd6df2884ddc7aba438fb63cc96ec799a8959fac9caeb490c7363fffcd45ba6904ae18c2e4bca1ce429a2b84c860342832eb12c8f00bdcacc3fef7ba1e289dcaf87417f9f792b3d0b7c1f2a0be697781874100745045a9",
+          },
+        })
+        .then((response) => {
+          const { photo } = response.data;
+
+          if (photo) {
+            setProfilepic(photo);
+          }else{
+            setProfilepic(profilePlaceholder);
+          }
+
+        })
+        .catch((error) => {
+          console.error("Failed to retrieve user preferences:", error);
+          // Handle error notifications or show error messages
+        });
+  }, [userid]);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -110,9 +140,9 @@ function Card({
         <div className="h-[60px] px-4 flex justify-between items-center">
           <div className="w-full h-full flex items-center">
             <img
-              src="https://cdna.artstation.com/p/assets/images/images/021/935/626/large/irina-nikiforova-purple.jpg?1573507084"
+              src={profilepic}
               alt="user"
-              className="h-[26px] w-auto rounded-full object-cover transition group-hover:grayscale-[50%]"
+              className="h-[26px] w-[26px] rounded-full object-cover transition group-hover:grayscale-[50%]"
             />
             <p className="font-medium ml-2 text-base">{username}</p>
           </div>
@@ -163,6 +193,7 @@ function Card({
               craftid={craftid}
               likes={likes}
               likeCount={likeCount}
+              profilePic={profilepic}
             />
           </div>
         </div>

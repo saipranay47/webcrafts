@@ -9,13 +9,14 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import New from './pages/New';
 import Profile from './pages/Profile';
+import EditProfile from "./components/EditProfile";
 import UserPage from "./pages/UserPage";
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <div className="main font-inter bg-[#10101D] text-white">
+    <div className="main font-inter bg-[#10101D] text-white min-h-screen">
       <UserProvider>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -23,7 +24,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/new" element={<New />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/users/:id" element={<UserPage/>} />
+          <Route path="/profileupdate" element={<EditProfile />} />
+          <Route path="/users/:id" element={<UserPage />} />
         </Routes>
         {/* </Container> */}
       </UserProvider>

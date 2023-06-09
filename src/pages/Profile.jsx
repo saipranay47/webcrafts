@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Header } from "../components/Header";
 import ProfileEditable from "../components/ProfileTop";
 import UserCrafts from "../abc/UserCrafts";
+import Footer from "../components/Footer";
 
 function Profile() {
   const { user } = useUser();
@@ -23,7 +24,8 @@ function Profile() {
           <div>
             <ProfileEditable auth={user} />
             {/* Render userCrafts here */}
-            <UserCrafts userid={userid} />
+            <hr className=" mt-10 mb-20" />
+            <UserCrafts userid={userid} className="mt-0"/>
           </div>
         ) : (
           <div className="w-full h-full min-h-screen flex justify-center items-center">
@@ -40,6 +42,7 @@ function Profile() {
           </div>
         )}
       </div>
+      <Footer/>
     </div>
   );
 }
