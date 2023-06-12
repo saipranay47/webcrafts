@@ -4,25 +4,41 @@ import { Query } from "appwrite";
 import Card from "../components/Card";
 
 
-export default function UserCrafts({ userid }) {
+export default function UserCrafts({ userid, limit = false}) {
   const [userCrafts, setuserCrafts] = useState([]);
 
 
   useEffect(() => {
     if (userid) {
-      databases
+      if (limit) {
+        databases
+          .listDocuments(
+            import.meta.env.VITE_PUBLIC_DATABASE_ID,
+            import.meta.env.VITE_PUBLIC_COLLECTION_ID,
+            [Query.equal("uid", userid), Query.orderDesc("$createdAt"), Query.limit(3)]
+          )
+          .then((response) => {
+            setuserCrafts(response.documents);
+            console.log(response.documents);
+          })
+          .catch((error) => {
+            console.error("Failed to fetch user crafts:", error);
+          });
+      } else {
+        databases
         .listDocuments(
           import.meta.env.VITE_PUBLIC_DATABASE_ID,
           import.meta.env.VITE_PUBLIC_COLLECTION_ID,
           [Query.equal("uid", userid), Query.orderDesc("$createdAt")]
-        )
-        .then((response) => {
-          setuserCrafts(response.documents);
-          console.log(response.documents);
-        })
-        .catch((error) => {
-          console.error("Failed to fetch user crafts:", error);
-        });
+          )
+          .then((response) => {
+            setuserCrafts(response.documents);
+            console.log(response.documents);
+          })
+          .catch((error) => {
+            console.error("Failed to fetch user crafts:", error);
+          });
+        }
     }
   }, [userid]);
 

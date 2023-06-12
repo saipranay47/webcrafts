@@ -122,7 +122,7 @@ function Card({
                     <span className="font-semibold">{title} </span>
                     {description}
                   </span>
-                  <div className="mt-1 flex flex-wrap gap-2">
+                  <div className="mt-1 flex flex-wrap gap-2 line-clamp-1 h-6">
                     {tags.map((tag, index) => (
                       <span
                         key={index}

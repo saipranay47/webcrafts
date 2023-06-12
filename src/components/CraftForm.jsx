@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Button } from "./Button";
 import { ButtonLink } from "./Button";
 import { databases, storage } from "../utils/appwrite";
-import { ID } from "appwrite";
+import { ID, Query } from "appwrite";
 import { useNavigate } from "react-router-dom";
 import Card from "./Card";
-import placeholder from "../images/placeholder.png"
+import placeholder from "../images/placeholder.png";
 import CardUrl from "./CardUrl";
 
-function CraftForm({auth}) {
+function CraftForm({ auth, craft }) {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -16,28 +16,246 @@ function CraftForm({auth}) {
   // tags input
   const [inptags, setInptags] = useState([]);
 
-  const addTags = (event) => {
-    if (event.key === "Enter" && event.target.value !== "") {
-      setInptags([...inptags, event.target.value]);
-      event.target.value = "";
+  const [tagInput, setTagInput] = useState();
+
+  const [dbTags, setDbTags] = useState([]);
+  const [suggestedTags, setSuggestedTags] = useState([]);
+
+  const [newTags, setNewTags] = useState([]);
+
+  const getTags = async () => {
+    try {
+      const res = await databases.listDocuments(
+        import.meta.env.VITE_PUBLIC_DATABASE_ID,
+        import.meta.env.VITE_PUBLIC_TAGS_COLLECTION_ID
+      );
+
+      let allTags = res.documents.map((doc) => doc.tag);
+
+      if (res.total > 25) {
+        let offset = 25;
+        while (offset < res.total) {
+          const res2 = await databases.listDocuments(
+            import.meta.env.VITE_PUBLIC_DATABASE_ID,
+            import.meta.env.VITE_PUBLIC_TAGS_COLLECTION_ID,
+            [Query.limit(25), Query.offset(offset)]
+          );
+          const tags = res2.documents.map((doc) => doc.tag);
+          allTags = [...allTags, ...tags];
+          offset += 25;
+        }
+      }
+
+      setDbTags(allTags);
+      console.log(allTags);
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  const removeTags = (indexToRemove) => {
-    setTags(inptags.filter((_, index) => index !== indexToRemove));
+  useEffect(() => {
+    getTags();
+  }, []);
+
+  const handleTagInputChange = (e) => {
+    const inputValue = e.target.value;
+
+    if (/[^a-zA-Z0-9]+/.test(inputValue.trim())) {
+      setErrors({
+        ...errors,
+        tags: "Tags should only contain alphanumeric characters",
+      });
+    } else if (inputValue.trim().length > 24) {
+      setErrors({
+        ...errors,
+        tags: `Tag cannot exceed ${24} characters`,
+      });
+    } else {
+      setErrors({ ...errors, tags: "" });
+    }
+
+    setTagInput(inputValue);
+    if (inputValue.length > 0) {
+      const matchingTags = dbTags.filter(
+        (tag) =>
+          tag.toLowerCase().startsWith(inputValue.toLowerCase()) &&
+          !inptags.includes(tag) // Exclude already entered tags from suggestions
+      );
+
+      setSuggestedTags(matchingTags);
+    } else {
+      setSuggestedTags([]);
+    }
   };
 
-  // values
-  const [values, setValues] = useState({
+  const handleSuggestedTagClick = (tag) => {
+    setInptags([...inptags, tag.toLowerCase()]);
+    setTagInput("");
+    setSuggestedTags([]);
+  };
+
+  const handleCreateTag = () => {
+    const newTag = tagInput.trim();
+
+    if (newTag !== "") {
+      if (inptags.length >= 10) {
+        setErrors({
+          ...errors,
+          tags: `You can only add up to ${10} tags`,
+        });
+        return;
+      }
+
+      if (newTag.length > 24) {
+        setErrors({
+          ...errors,
+          tags: `Tag cannot exceed ${24} characters`,
+        });
+        return;
+      }
+
+      if (inptags.includes(newTag.toLowerCase())) {
+        setErrors({
+          ...errors,
+          tags: "Tag already exists",
+        });
+        return;
+      }
+
+      setErrors({ ...errors, tags: "" });
+
+      setInptags([...inptags, newTag]);
+      setTagInput("");
+      setSuggestedTags([]);
+      console.log(`Create ${newTag}`);
+      setNewTags([...newTags, newTag]);
+    }
+  };
+
+  const createNewTags = async () => {
+    try {
+      if (newTags.length > 0) {
+        for (const tag of newTags) {
+          await databases.createDocument(
+            import.meta.env.VITE_PUBLIC_DATABASE_ID,
+            import.meta.env.VITE_PUBLIC_TAGS_COLLECTION_ID,
+            tag,
+            {
+              tag: tag,
+              count: 0,
+            }
+          );
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const [errors, setErrors] = useState({
     title: "",
     liveLink: "",
     sourceCodeLink: "",
-    tags: inptags,
-    imgid: "",
+    tags: "",
+    image: "",
     description: "",
-    username: auth.name,
-    uid: auth.$id,
   });
+
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = { ...errors };
+
+    // Validate title
+    if (values.title.length > 100) {
+      newErrors.title = "Title cannot exceed 100 characters";
+      isValid = false;
+    } else if (values.title.length === 0) {
+      newErrors.title = "Title is required";
+      isValid = false;
+    } else {
+      newErrors.title = "";
+    }
+
+    // Validate live link
+    if (!values.liveLink.match(/^https?:\/\/.+$/)) {
+      newErrors.liveLink = "Invalid live link URL";
+      isValid = false;
+    } else if (values.liveLink.length === 0) {
+      newErrors.liveLink = "Live link is required";
+      isValid = false;
+    } else {
+      newErrors.liveLink = "";
+    }
+
+    // Validate source code link
+    if (!values.sourceCodeLink.match(/^https?:\/\/.+$/)) {
+      newErrors.sourceCodeLink = "Invalid source code link URL";
+      isValid = false;
+    } else if (values.sourceCodeLink.length === 0) {
+      newErrors.sourceCodeLink = "Source code link is required";
+      isValid = false;
+    } else {
+      newErrors.sourceCodeLink = "";
+    }
+
+    // Validate tags
+    for (const tag of values.tags) {
+      if (tag.length > 24) {
+        newErrors.tags = "Tag cannot exceed 24 characters";
+        isValid = false;
+        break;
+      }
+
+      const tagPattern = /^[a-zA-Z0-9]+$/; // Pattern to match only alphanumeric characters
+      if (!tagPattern.test(tag)) {
+        newErrors.tags = "Tags should only contain alphanumeric characters";
+        isValid = false;
+        break;
+      }
+    }
+
+    if (values.tags.length === 0) {
+      newErrors.tags = "At least one tag is required";
+      isValid = false;
+    } else {
+      newErrors.tags = "";
+    }
+
+    // Validate image
+    if (craft) {
+      newErrors.image = "";
+    } else {
+      if (image && !["image/png", "image/jpeg"].includes(image.type)) {
+        newErrors.image = "Invalid image format (PNG or JPEG allowed)";
+        isValid = false;
+      } else if (!image) {
+        newErrors.image = "Image is required";
+        isValid = false;
+      } else {
+        newErrors.image = "";
+      }
+    }
+
+    // Validate description
+    if (values.description.length > 1000) {
+      newErrors.description = "Description cannot exceed 1000 characters";
+      isValid = false;
+    } else if (values.description.length === 0) {
+      newErrors.description = "Description is required";
+      isValid = false;
+    } else {
+      newErrors.description = "";
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const removeTags = (indexToRemove) => {
+    setInptags(inptags.filter((_, index) => index !== indexToRemove));
+  };
+
+  // values
 
   const [image, setImage] = useState();
 
@@ -68,22 +286,35 @@ function CraftForm({auth}) {
 
   const imageUpload = async () => {
     try {
-      const promise = await storage.createFile(
-        import.meta.env.VITE_PUBLIC_BUCKET_ID,
-        ID.unique(),
-        image
-      );
+      if (image) {
+        const promise = await storage.createFile(
+          import.meta.env.VITE_PUBLIC_BUCKET_ID,
+          ID.unique(),
+          image
+        );
 
-      console.log(promise);
+        console.log(promise);
 
-      const updatedValues = {
-        ...values,
-        imgid: promise.$id,
-      };
+        const updatedValues = {
+          ...values,
+          imgid: promise.$id,
+        };
 
-      setValues(updatedValues);
-      console.log(updatedValues);
-      await createDoc(updatedValues);
+        setValues(updatedValues);
+        console.log(updatedValues);
+        // await createDoc(updatedValues);
+        if (craft) {
+          await updateDoc(updatedValues);
+        } else {
+          await createDoc(updatedValues);
+        }
+      } else {
+        if (craft) {
+          await updateDoc(values);
+        } else {
+          await createDoc(values);
+        }
+      }
     } catch (error) {
       console.log(error);
     }
@@ -99,7 +330,27 @@ function CraftForm({auth}) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await imageUpload();
+
+    if (validateForm()) {
+      await createNewTags();
+      await imageUpload();
+    }
+    setLoading(false);
+  };
+
+  const handleUpdate = async (e) => {
+    console.log("update");
+    e.preventDefault();
+    setLoading(true);
+
+    if (validateForm()) {
+      await createNewTags();
+      await imageUpload();
+      // await updateDoc(values);
+    } else {
+      console.log("not valid");
+      console.log(errors);
+    }
     setLoading(false);
   };
 
@@ -116,6 +367,22 @@ function CraftForm({auth}) {
       );
       console.log(promise);
       navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const updateDoc = async (valuess) => {
+    console.log("collection:" + import.meta.env.VITE_PUBLIC_DATABASE_ID);
+    try {
+      const promise = await databases.updateDocument(
+        import.meta.env.VITE_PUBLIC_DATABASE_ID,
+        import.meta.env.VITE_PUBLIC_COLLECTION_ID,
+        craft.$id,
+        valuess
+      );
+      console.log(promise);
+      navigate("/craft/" + craft.$id);
     } catch (error) {
       console.log(error);
     }
@@ -156,7 +423,46 @@ function CraftForm({auth}) {
     }
   };
 
-  
+  const [values, setValues] = useState({
+    title: "",
+    liveLink: "",
+    sourceCodeLink: "",
+    tags: inptags,
+    imgid: "",
+    description: "",
+    username: auth.name,
+    uid: auth.$id,
+  });
+
+  const [imageUrl, setImageUrl] = useState(null);
+
+  useEffect(() => {
+    if (craft) {
+      setValues({
+        title: craft.title,
+        liveLink: craft.liveLink,
+        sourceCodeLink: craft.sourceCodeLink,
+        tags: craft.tags,
+        imgid: craft.imgid,
+        description: craft.description,
+        username: craft.username,
+        uid: craft.uid,
+      });
+      setInptags(craft.tags);
+
+      if (craft.imgid) {
+        try {
+          const result = storage.getFilePreview(
+            import.meta.env.VITE_PUBLIC_BUCKET_ID,
+            craft.imgid
+          );
+          setImageUrl(result.href);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+  }, [craft]);
 
   return (
     <div className="h-full pt-10">
@@ -195,84 +501,117 @@ function CraftForm({auth}) {
                 <input name="hidden" className="hidden" />
                 <input name="_redirect" type="hidden" value="#" />
                 <div className="mt-4 space-y-6">
-                  <div>
-                    <label
-                      className="block mb-3 text-sm font-medium text-gray-200"
-                      name="title"
-                    >
+                  <div className="col-span-full">
+                    <label className="block mb-3 text-sm font-medium text-gray-200">
                       Project Title
                     </label>
                     <input
                       className="block w-full px-6 py-3 text-black bg-white border border-gray-200 appearance-none rounded-xl placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                       placeholder="Developer Portfolio website"
                       value={values.title}
-                      onChange={(e) =>
-                        setValues({ ...values, title: e.target.value })
-                      }
+                      onChange={(e) => {
+                        if (e.target.value.length <= 100) {
+                          setValues({ ...values, title: e.target.value });
+                          setErrors({ ...errors, title: "" });
+                        } else {
+                          setErrors({
+                            ...errors,
+                            title: "Title cannot exceed 100 characters",
+                          });
+                        }
+                      }}
                     />
+                    {errors.title && (
+                      <p className="text-red-500">{errors.title}</p>
+                    )}
                   </div>
+
                   <div className="col-span-full">
-                    <label
-                      className="block mb-3 text-sm font-medium text-gray-200"
-                      name="liveLink"
-                    >
+                    <label className="block mb-3 text-sm font-medium text-gray-200">
                       Live website link
                     </label>
                     <input
                       className="block w-full px-6 py-3 text-black bg-white border border-gray-200 appearance-none rounded-xl placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                       placeholder="https://example.com"
                       value={values.liveLink}
-                      onChange={(e) =>
-                        setValues({ ...values, liveLink: e.target.value })
-                      }
+                      onChange={(e) => {
+                        if (e.target.value.match(/^https?:\/\/.+$/)) {
+                          setValues({ ...values, liveLink: e.target.value });
+                          setErrors({ ...errors, liveLink: "" });
+                        } else {
+                          setValues({ ...values, liveLink: e.target.value });
+                          setErrors({
+                            ...errors,
+                            liveLink: "Invalid live link URL",
+                          });
+                        }
+                      }}
                     />
-                    <br />
+                    {errors.liveLink && (
+                      <p className="text-red-500">{errors.liveLink}</p>
+                    )}
                     <Button
                       color="blue"
-                      className="rounded-md"
+                      className="rounded-md mt-3"
                       onClick={getOgData}
                     >
                       Get meta data
                     </Button>
                   </div>
+
                   <div className="col-span-full">
-                    <label
-                      className="block mb-3 text-sm font-medium text-gray-200"
-                      name="sourceCodeLink"
-                    >
+                    <label className="block mb-3 text-sm font-medium text-gray-200">
                       Link to source code
                     </label>
                     <input
                       className="block w-full px-6 py-3 text-black bg-white border border-gray-200 appearance-none rounded-xl placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                       placeholder="https://github.com/jhon/portfolio"
                       value={values.sourceCodeLink}
-                      onChange={(e) =>
-                        setValues({ ...values, sourceCodeLink: e.target.value })
-                      }
+                      onChange={(e) => {
+                        if (e.target.value.match(/^https?:\/\/.+$/)) {
+                          setValues({
+                            ...values,
+                            sourceCodeLink: e.target.value,
+                          });
+                          setErrors({ ...errors, sourceCodeLink: "" });
+                        } else {
+                          setValues({
+                            ...values,
+                            sourceCodeLink: e.target.value,
+                          });
+                          setErrors({
+                            ...errors,
+                            sourceCodeLink: "Invalid source code link URL",
+                          });
+                        }
+                      }}
                     />
+                    {errors.sourceCodeLink && (
+                      <p className="text-red-500">{errors.sourceCodeLink}</p>
+                    )}
                   </div>
 
                   {/* tags imput */}
                   <div className="col-span-full">
-                    <label
-                      className="block mb-3 text-sm font-medium text-gray-200"
-                      name="tags"
-                    >
-                      Relavent Tags
+                    <label className="block mb-3 text-sm font-medium text-gray-200">
+                      Relevant Tags
                     </label>
-                    <div className="items-center w-full px-3 py-3 text-black bg-white border border-gray-200 appearance-none rounded-xl  sm:text-sm">
+                    <div className="items-center w-full px-3 py-3 text-black bg-white border border-gray-200 appearance-none rounded-xl sm:text-sm">
                       <div className="ml-2">
                         <input
                           className="w-full px-1 py-1 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                           placeholder="Add tags"
-                          onKeyUp={addTags}
+                          value={tagInput}
+                          onChange={handleTagInputChange}
                         />
                       </div>
-                      <div className="flex flex-wrap items-center justify-start gap-2 ">
+                      <div className="flex flex-wrap items-center justify-start gap-2">
                         {inptags.map((tag, index) => (
-                          <span className="py-2 bg-[#10101D] text-gray-200 pl-4 pr-3 rounded-full flex items-center">
+                          <span
+                            className="py-2 bg-[#10101D] text-gray-200 pl-4 pr-3 rounded-full flex items-center"
+                            key={index}
+                          >
                             {tag}
-
                             <button
                               className="ml-1"
                               onClick={() => removeTags(index)}
@@ -291,8 +630,37 @@ function CraftForm({auth}) {
                         ))}
                       </div>
                     </div>
-                  </div>
+                    {errors.tags && (
+                      <p className="text-red-500">{errors.tags}</p>
+                    )}
+                    {tagInput?.length > 0 && (
+                      <div className="mt-2">
+                        <p className="text-sm text-gray-400">Select tag:</p>
+                        <div className="flex flex-wrap mt-1">
+                          {suggestedTags.map((tag) => (
+                            <button
+                              key={tag}
+                              className="py-1 px-2 mr-2 mt-2 bg-gray-200 text-gray-700 rounded-md text-sm"
+                              onClick={() => handleSuggestedTagClick(tag)}
+                            >
+                              {tag}
+                            </button>
+                          ))}
 
+                          {tagInput.trim() !== "" &&
+                            suggestedTags.length === 0 &&
+                            errors.tags === "" && (
+                              <button
+                                className="py-1 px-2 mr-2 mt-2 bg-gray-200 text-gray-700 rounded-md text-sm"
+                                onClick={handleCreateTag}
+                              >
+                                Create {tagInput}
+                              </button>
+                            )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                   <div className="col-span-full">
                     <label htmlFor="small-file-input" className="sr-only">
                       Choose file
@@ -301,45 +669,67 @@ function CraftForm({auth}) {
                       type="file"
                       name="small-file-input"
                       id="small-file-input"
-                      className="block w-full border border-gray-200 shadow-sm rounded-md text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 file:bg-transparent file:border-0 file:bg-gray-100 file:mr-4 file:py-2 file:px-4 dark:file:bg-gray-700 dark:file:text-gray-400"
+                      className="block w-full border shadow-sm rounded-md text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 bg-slate-50 border-gray-300 text-gray-800 file:bg-transparent file:border-0 file:bg-gray-400 file:mr-4 file:py-2 file:px-4  file:text-gray-800"
                       onChange={(e) => setImage(e.target.files[0])}
                     ></input>
                   </div>
 
                   <div>
-                    <div>
-                      <label
-                        className="block mb-3 text-sm font-medium text-gray-200"
-                        name="description"
-                      >
-                        Project details
+                    <div className="col-span-full">
+                      <label className="block mb-3 text-sm font-medium text-gray-200">
+                        Description
                       </label>
-                      <div className="mt-1">
-                        <textarea
-                          className="block w-full px-6 py-3 text-black bg-white border border-gray-200 appearance-none rounded-xl placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
-                          placeholder="short description about your poject"
-                          rows="4"
-                          value={values.description}
-                          onChange={(e) =>
+                      <textarea
+                        className="block w-full px-6 py-3 text-black bg-white border border-gray-200 appearance-none rounded-xl placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                        placeholder="Enter project description"
+                        value={values.description}
+                        onChange={(e) => {
+                          if (e.target.value.length <= 1000) {
                             setValues({
                               ...values,
                               description: e.target.value,
-                            })
+                            });
+                            setErrors({ ...errors, description: "" });
+                          } else {
+                            setErrors({
+                              ...errors,
+                              description:
+                                "Description cannot exceed 1000 characters",
+                            });
                           }
-                        ></textarea>
-                      </div>
+                        }}
+                      />
+                      <p className="text-sm text-gray-500">
+                        {values.description.length}/1000
+                      </p>
+                      {errors.description && (
+                        <p className="text-red-500">{errors.description}</p>
+                      )}
                     </div>
                   </div>
-                  <div className="col-span-full">
-                    <Button
-                      variant="solid"
-                      color="blue"
-                      className="w-full"
-                      onClick={handleSubmit}
-                    >
-                      Submit your work
-                    </Button>
-                  </div>
+                  {craft ? (
+                    <div className="col-span-full">
+                      <Button
+                        variant="solid"
+                        color="blue"
+                        className="w-full"
+                        onClick={handleUpdate}
+                      >
+                        Update your work
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="col-span-full">
+                      <Button
+                        variant="solid"
+                        color="blue"
+                        className="w-full"
+                        onClick={handleSubmit}
+                      >
+                        Submit your work
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -374,6 +764,14 @@ function CraftForm({auth}) {
                 tags={values.tags}
                 description={values.description}
                 image={URL.createObjectURL(image)}
+                username={values.username}
+              />
+            ) : imageUrl ? (
+              <CardUrl
+                title={values.title}
+                tags={values.tags}
+                description={values.description}
+                image={imageUrl}
                 username={values.username}
               />
             ) : (

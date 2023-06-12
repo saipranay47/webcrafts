@@ -131,14 +131,14 @@ function ProfileEditable({ auth }) {
             </span>
           </div>
           <div className="h-[100px]"></div>
-          <div className="flex flex-col gap-2 mt-5">
+          <div className="flex flex-col gap-2 mt-5 min-w-[250px]">
             <h1 className="text-5xl font-bold">{auth.name}</h1>
             <p className="text-2xl">{auth.email}</p>
           </div>
         </div>
         <div className="lg:ml-20 my-16  flex gap-10 w-full max-lg:flex-wrap ">
           <div className="md:h-[200px] w-full sm:max-w-md bg-white  p-6 flex flex-wrap-reverse  justify-between items-center rounded-xl shadow-sm hover:shadow-md border-gray-300 border-[1px] cursor-pointer hover:opacity-90">
-            <div className="flex flex-col justify-between items-start md:h-full">
+            <div className="flex flex-col justify-between items-start md:h-full max-md:mt-10">
               <img
                 src={github}
                 alt=""

@@ -6,6 +6,7 @@ import { Container } from "../components/Container";
 import Card from "../components/Card";
 import ListAllCrafts from "../components/ListAllCrafts";
 import Footer from "../components/Footer";
+import Search from "../components/Search";
 
 function Home() {
   // Inside your component
@@ -55,6 +56,7 @@ function Home() {
         <br />
         <ListAllCrafts />
       </Container>
+      {/* <Search/> */}
       <Footer/>
     </div>
   );

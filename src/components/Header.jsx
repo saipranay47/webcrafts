@@ -5,11 +5,12 @@ import clsx from "clsx";
 import { Button } from "./Button";
 import { ButtonLink } from "./Button";
 import { Container } from "./Container.jsx";
-import { Logo } from "./Logo";
+import logoIcon  from "../images/logoIcon.svg";
 import { Link } from "react-router-dom";
 import { useUser } from "../hooks/user";
 import avatar from "../images/avatar.svg";
 import { useNavigate } from "react-router-dom";
+import Search from "./Search";
 
 function ProfileMenu() {
   const [SignedIn, setSignedIn] = useState(false);
@@ -197,23 +198,23 @@ function MobileNavigation() {
                 className="absolute inset-x-0 top-full mt-4 origin-top space-y-4 rounded-2xl bg-[#10101D] p-6 text-lg tracking-tight text-slate-100 shadow-xl ring-1 ring-slate-900/5"
               >
                 <li>
-                  <Link to="#Inspiration">
+                  <Link to="#CraftsShowcase">
                     <span className="block w-full" onClick={() => close()}>
-                      Inspiration
+                      Crafts Showcase
                     </span>
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link to="#Resources">
                     <span className="block w-full" onClick={() => close()}>
                       Resources
                     </span>
                   </Link>
-                </li>
+                </li> */}
                 <li>
-                  <Link to="#ProjectIdeas">
+                  <Link to="#CraftedDevs">
                     <span className="block w-full" onClick={() => close()}>
-                      Project Ideas
+                      Crafted Devs
                     </span>
                   </Link>
                 </li>
@@ -279,44 +280,49 @@ export function Header() {
   }, [user]);
 
   return (
-    <header className="py-8 bg-zinc-900 text-white">
-      <Container>
+    <header className="py-6 bg-zinc-900 text-white">
+      <Container className="max-w-none">
         <nav className="relative z-50 text-sm flex justify-between">
           <ul className="flex items-center">
             <li>
               <Link to="/">
                 <span>
                   <span className="sr-only">Home</span>
-                  <Logo className="h-10 w-auto" />
+                  <img src={logoIcon} alt="" className="min-w-[50px]" />
                 </span>
               </Link>
             </li>
-            <li className="ml-12 hidden md:block">
-              <Link to="#Inspiration">
+            <li className=" ml-7 hidden md:block">
+              <Link to="#Crafts Showcase">
                 <span className=" text-slate-300 hover:text-white hover:underline decoration-wavy text-base">
-                  Inspiration
+                  Crafts Showcase
                 </span>
               </Link>
             </li>
-            <li className="ml-6 hidden md:block">
+            {/* <li className="ml-6 hidden md:block">
               <Link to="#Resources">
                 <span className=" text-slate-300 hover:text-white hover:underline decoration-wavy text-base">
                   Resources
                 </span>
               </Link>
-            </li>
+            </li> */}
             <li className="ml-6 hidden md:block">
-              <Link to="#Project Ideas">
-                <span className=" text-slate-300 hover:text-white hover:underline decoration-wavy text-base">
-                  Project Ideas
+              <Link to="#CraftedDevs">
+                <span className=" text-slate-300 hover:text-white hover:underline decoration-wavy text-base whitespace-nowrap">
+                  Crafted Devs
                 </span>
               </Link>
             </li>
           </ul>
+          <Search />
           <ul className="flex items-center">
             <li className="ml-auto md:ml-8">
-              <ButtonLink href="/new" color="blue">
-                <span>Share work</span>
+              <ButtonLink
+                href="/new"
+                color="blue"
+                className="max-md:text-[12px]"
+              >
+                <span className="whitespace-nowrap">Share work</span>
               </ButtonLink>
             </li>
             {signedIn ? (

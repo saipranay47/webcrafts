@@ -12,6 +12,12 @@ import { useUser } from "../hooks/user";
 import UserCrafts from "../abc/UserCrafts";
 import { client, databases } from "../utils/appwrite";
 import { Link } from "react-router-dom";
+import ShareComponent from "./ShareComponent";
+import CommentComponent from "./CommentComponent";
+import Share from "./Share";
+import slugify from "slugify";
+import { PencilIcon } from "@heroicons/react/24/solid";
+import { TrashIcon } from "@heroicons/react/24/solid";
 
 function CardModel({
   title,
@@ -44,15 +50,22 @@ function CardModel({
     likeCount,
   });
   const [likeLoading, setLikeLoading] = useState(false);
+  const [isModelOpen, setIsModelOpen] = useState(false);
 
   useEffect(() => {
-    // Check if the logged-in user has already liked the craft
     if (user && likes.includes(user.$id)) {
       setLiked(true);
     } else {
       setLiked(false);
     }
   }, []);
+
+  function generateTagId(tag) {
+    return slugify(tag, {
+      lower: true,
+      remove: /[^a-zA-Z0-9]/g, // Remove special characters and spaces
+    });
+  }
 
   const handleLike = (id, action) => {
     setLikeLoading(true);
@@ -99,9 +112,28 @@ function CardModel({
     }
   };
 
+  const handleShareClick = () => {
+    setIsModelOpen(true);
+  };
+
+  const handleDelete = () => {
+    databases
+      .deleteDocument(
+        import.meta.env.VITE_PUBLIC_DATABASE_ID,
+        import.meta.env.VITE_PUBLIC_COLLECTION_ID,
+        craftid
+      )
+      .then((res) => {
+        console.log(res);
+        window.location.href = "/";
+      })
+      .catch((err) => console.log(err));
+  };
+
+
   return (
     <div className="relative">
-      <div className="sm:absolute top-10 right-[40px] pt-[40px] lg:w-[40px] md:h-full  h-[40px] hidden sm:block">
+      <div className="sm:absolute top-10 right-[40px] pt-[40px] md:w-[40px] md:h-full  h-[40px] hidden sm:block">
         <div className="sticky top-20 flex md:flex-col gap-4 h-[40px] ">
           <Link to={`/users/${userid}`}>
             <img
@@ -110,22 +142,37 @@ function CardModel({
               className="h-[40px] w-[40px] rounded-full"
             />
           </Link>
+          {user && user.$id == userid && (
+            <div className="flex justify-end">
+              <Link
+                to={`/editcraft/${craftid}`}
+                className="bg-gray-200 rounded-full fill-gray-600 p-3"
+              >
+                <PencilIcon className="h-4 w-4 fill-black opacity-60" />
+              </Link>
+            </div>
+          )}
+          {user && user.$id == userid && (
+            <div className="flex justify-end">
+              <button
+                className="bg-gray-200 rounded-full fill-gray-600 p-3"
+                onClick={handleDelete}
+              >
+                <TrashIcon className="h-4 w-4 fill-black opacity-60" />
+              </button>
+            </div>
+          )}
 
-          <div className="h-[40px] p-[14px] bg-gray-200 rounded-full flex justify-center items-center cursor-pointer">
-            <img src={share} className="opacity-60 h-full" />
-          </div>
-          <div className="h-[40px] p-[14px] bg-gray-200 rounded-full flex justify-center items-center cursor-pointer">
-            <img src={save} className="opacity-60 h-full" />
-          </div>
-          <div className="h-[40px] p-[14px] bg-gray-200 rounded-full flex justify-center items-center cursor-pointer">
-            <img src={comment} className="opacity-60 h-full" />
+          <Share />
+          <div className="h-[40px] w-[40px] p-[14px] bg-gray-200 rounded-full flex justify-center items-center cursor-pointer">
+            <CommentComponent />
           </div>
         </div>
       </div>
       <Container className="md:px-[68px] md:py-[120px] md:pb-[0px] p-5 pt-10 mb-10">
         <div className="mx-auto max-w-7xl">
           <div className="felx md:mx-[44px]">
-            <div className="w-full px-6 md:px-20 m-auto flex flex-col md:flex-row justify-between items-end min-md:items-start ">
+            <div className="w-full px-6 md:px-20 m-auto flex flex-col md:flex-row justify-between items-start md:items-end ">
               <h2 className="text-2xl md:text-4xl font-semibold mb-3">
                 {username}
               </h2>
@@ -138,14 +185,64 @@ function CardModel({
                     className="h-[40px] w-[40px] rounded-full"
                   />
 
-                  <div className="h-[40px] p-[14px] bg-gray-200 rounded-full flex justify-center items-center cursor-pointer">
-                    <img src={share} className="opacity-60 h-full" />
+                  {user && user.$id == userid && (
+                    <div className="flex justify-end">
+                      <Link
+                        to={`/editcraft/${craftid}`}
+                        className="bg-gray-200 rounded-full fill-gray-600 p-3"
+                      >
+                        <PencilIcon className="h-4 w-4 fill-black opacity-60" />
+                      </Link>
+                    </div>
+                  )}
+                  {user && user.$id == userid && (
+                    <div className="flex justify-end">
+                      <button
+                        className="bg-gray-200 rounded-full fill-gray-600 p-3"
+                        onClick={handleDelete}
+                      >
+                        <TrashIcon className="h-4 w-4 fill-black opacity-60" />
+                      </button>
+                    </div>
+                  )}
+
+                  <div
+                    className="h-[40px] p-[14px] bg-gray-200 rounded-full flex justify-center items-center cursor-pointer"
+                    onClick={handleShareClick}
+                  >
+                    <img
+                      src={share}
+                      className="opacity-60 h-full"
+                      alt="Share"
+                    />
                   </div>
-                  <div className="h-[40px] p-[14px] bg-gray-200 rounded-full flex justify-center items-center cursor-pointer">
+                  {isModelOpen && (
+                    <div
+                      className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-10"
+                      onClick={() => setIsModelOpen(false)}
+                    >
+                      <div
+                        className="bg-white p-6 rounded-lg flex flex-col gap-4 "
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <button
+                          className="bg-blue-500 text-white px-4 py-2 rounded "
+                          onClick={() => setIsModelOpen(false)}
+                        >
+                          close
+                        </button>
+                        <ShareComponent
+                          url="https://saipranay.vercel.app"
+                          text="check out my portfolio"
+                        />
+                      </div>
+                    </div>
+                  )}
+                  {/* <div className="h-[40px] p-[14px] bg-gray-200 rounded-full flex justify-center items-center cursor-pointer">
                     <img src={save} className="opacity-60 h-full" />
-                  </div>
+                  </div> */}
                   <div className="h-[40px] p-[14px] bg-gray-200 rounded-full flex justify-center items-center cursor-pointer">
-                    <img src={comment} className="opacity-60 h-full" />
+                    <CommentComponent />
                   </div>
                 </div>
               </div>
@@ -196,10 +293,18 @@ function CardModel({
                   )}
                 </button>
 
-                <ButtonUrl color="white" href={liveLink}>
+                <ButtonUrl
+                  color="white"
+                  href={liveLink}
+                  className="max-md:text-[12px]"
+                >
                   Live site
                 </ButtonUrl>
-                <ButtonUrl color="white" href={sourceCode}>
+                <ButtonUrl
+                  color="white"
+                  href={sourceCode}
+                  className="max-md:text-[12px]"
+                >
                   Source code
                 </ButtonUrl>
               </div>
@@ -216,9 +321,18 @@ function CardModel({
               <br />
               <div className="flex gap-2 pb-3 md:pb-6">
                 {tags.map((tag) => (
-                  <span className="text-white bg-zinc-900 px-3 py-1 rounded-full border border-white">
-                    {tag}
-                  </span>
+                  <a
+                    className="active:scale-[0.95] transition-all"
+                    href={`/tags/${generateTagId(tag)}`} // Generate the ID for the tag
+                    key={tag}
+                  >
+                    <div className="text-slate-600 dark:text-zinc-200 text-sm border border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700 px-1 py-1 pr-2 rounded-xl">
+                      <span className="bg-slate-100 dark:bg-zinc-800 dark:text-zinc-500 inline-block p-0.5 px-1 mr-1 rounded-lg leading-none">
+                        #
+                      </span>
+                      {tag}
+                    </div>
+                  </a>
                 ))}
               </div>
             </div>
@@ -230,7 +344,7 @@ function CardModel({
         <hr />
         <h3 className="mt-8 ml-8">More by {username}</h3>
       </Container>
-      <UserCrafts userid={userid} />
+      <UserCrafts userid={userid} limit={true} />
     </div>
   );
 }
