@@ -38,8 +38,8 @@ function App() {
           <Route path="/craft/:id" element={<Craft />} />
           <Route path="/search" element={<SearchResults />} />
           <Route path="/searchpage" element={<SearchPage />} />
-          <Route exact path="/tags" element={<Tags />} />
-          <Route exact path="/tags/:keyword" element={<TagsSearch />} />
+          <Route path="/tags" element={<Tags />} />
+          <Route path="/tags/:keyword" element={<TagsSearch />} />
         </Routes>
         {/* </Container> */}
       </UserProvider>
