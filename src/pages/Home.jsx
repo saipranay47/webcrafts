@@ -24,7 +24,7 @@ function Home() {
   return (
     <div className="min-h-screen">
       <Header />
-      <Container className="bg-[#10101D] text-white max-w-full mb-24">
+      <Container className="bg-[#10101D] text-white max-w-full mb-24 min-h-screen">
 
         <br />
         <br />
