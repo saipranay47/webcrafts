@@ -2,7 +2,7 @@ import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Outlet } from "react-router-dom";
 import { UserProvider } from "./hooks/user";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
@@ -26,20 +26,20 @@ function App() {
       <UserProvider>
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/craftsshowcase" element={<Home />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/new" element={<New />} />
-          <Route path="/editcraft/:id" element={<EditCraft />} />
-          <Route path="/profile" element={<Profile />} />
-          {/* <Route path="/crafteddevs" element={<CraftedDevs />} /> */}
-          <Route path="/profileupdate" element={<EditProfile />} />
-          <Route path="/users/:id" element={<UserPage />} />
-          <Route path="/craft/:id" element={<Craft />} />
-          <Route path="/search" element={<SearchResults />} />
-          <Route path="/searchpage" element={<SearchPage />} />
-          <Route path="/tags" element={<Tags />} />
-          <Route path="/tag/:keyword" element={<TagsSearch />} />
+          <Route path="craftsshowcase" element={<Home />} />
+          <Route path="register" element={<Register />} />
+          <Route path="login" element={<Login />} />
+          <Route path="new" element={<New />} />
+          <Route path="editcraft/:id" element={<EditCraft />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="profileupdate" element={<EditProfile />} />
+          <Route path="users/:id" element={<UserPage />} />
+          <Route path="craft/:id" element={<Craft />} />
+          <Route path="search" element={<SearchResults />} />
+          <Route path="searchpage" element={<SearchPage />} />
+          <Route path="tags" element={<Tags />} />
+          <Route path="tag/:keyword" element={<TagsSearch />} />
+          <Route path="*" element={<Landing />} />
         </Routes>
         {/* </Container> */}
       </UserProvider>
