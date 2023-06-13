@@ -593,16 +593,15 @@ function Landing() {
           <div class="relative items-center w-full pb-12 mx-auto mt-12 max-w-7xl">
             <div>
               <video
-                autoplay=""
                 class="object-cover w-full rounded lg:rounded-2xl"
                 height="100%"
-                loop=""
-                muted=""
-                playsinline=""
                 width="100%"
+                autoPlay
+                loop
+                controls
               >
                 <source
-                  src="https://d33wubrfki0l68.cloudfront.net/b3fb0d3c87038c6a1517d3220eedee8bead88964/419d0/monoqrom.mp4"
+                  src="https://github-production-user-asset-6210df.s3.amazonaws.com/70259716/245557927-8c502068-63ad-4c45-8a9f-423f0618eba5.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20230613%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230613T172755Z&X-Amz-Expires=300&X-Amz-Signature=1223b4e251c3132b1a39671d64336c376d3addac9fd9070ed1f5bff155f88ed3&X-Amz-SignedHeaders=host&actor_id=70259716&key_id=0&repo_id=651067550"
                   type="video/mp4"
                 />
                 Your browser does not support the video tag.
