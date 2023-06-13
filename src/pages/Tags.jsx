@@ -60,7 +60,7 @@ function Tags() {
                     {groupTagsByAlphabet(tagsList)[letter].map((tag) => (
                       <a
                         className="active:scale-[0.95] transition-all"
-                        href={`/tags/${tag.$id}`}
+                        href={`/tag/${tag.$id}`}
                         key={tag.$id}
                       >
                         <div className="text-slate-600 dark:text-zinc-200 text-sm border border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700 px-1 py-1 pr-2 rounded-xl">

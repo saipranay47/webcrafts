@@ -336,7 +336,7 @@ function CardModel({
                 {tags.map((tag) => (
                   <a
                     className="active:scale-[0.95] transition-all"
-                    href={`/tags/${generateTagId(tag)}`} // Generate the ID for the tag
+                    href={`/tag/${generateTagId(tag)}`} // Generate the ID for the tag
                     key={tag}
                   >
                     <div className="text-slate-600 dark:text-zinc-200 text-sm border border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700 px-1 py-1 pr-2 rounded-xl">

@@ -39,7 +39,7 @@ function App() {
           <Route path="/search" element={<SearchResults />} />
           <Route path="/searchpage" element={<SearchPage />} />
           <Route path="/tags" element={<Tags />} />
-          <Route path="/tags/:keyword" element={<TagsSearch />} />
+          <Route path="/tag/:keyword" element={<TagsSearch />} />
         </Routes>
         {/* </Container> */}
       </UserProvider>
