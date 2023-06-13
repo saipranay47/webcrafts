@@ -38,7 +38,10 @@ export function UserProvider({ children }) {
 
   const loginWithGithub = async () => {
     try {
-      await account.createOAuth2Session("github", "http://localhost:5173");
+      await account.createOAuth2Session(
+        "github",
+        import.meta.env.VITE_PUBLIC_BASE_URL
+      );
       const user = await account.get();
       setUser(user);
     } catch (error) {
