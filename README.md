@@ -3,6 +3,12 @@
 
 Web Crafts is a project aimed at building the world's best community for web developers. It provides a platform for web developers to share their knowledge, collaborate with others, expand their skills, get feedback on their work, and even find job opportunities.
 
+
+
+https://github.com/saipranay47/webcrafts/assets/70259716/8c502068-63ad-4c45-8a9f-423f0618eba5
+
+
+
 Project Setup
 -------------
 
