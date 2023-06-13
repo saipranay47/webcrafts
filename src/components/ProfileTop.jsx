@@ -6,11 +6,11 @@ import { Container } from "./Container";
 import GitHubCalendar from "react-github-calendar";
 import github from "../images/github.svg";
 import hashnode from "../images/hashnode.png";
-
+import Widgets from "../abc/Widgets";
 import { databases } from "../utils/appwrite";
 import { Query } from "appwrite";
 
-function ProfileEditable({ auth }) {
+function ProfileTop({ auth }) {
   console.log(auth);
   const [Crafts, setuserCrafts] = useState([]);
   const [totalLikes, setTotalLikes] = useState(0);
@@ -39,43 +39,6 @@ function ProfileEditable({ auth }) {
     }
   }, [auth]);
 
-  const selectLastHalfYear = (contributions) => {
-    const currentYear = new Date().getFullYear();
-    const currentMonth = new Date().getMonth();
-    const shownMonths = 3;
-
-    return contributions.filter((activity) => {
-      const date = new Date(activity.date);
-      const monthOfDay = date.getMonth();
-
-      return (
-        date.getFullYear() === currentYear &&
-        monthOfDay > currentMonth - shownMonths &&
-        monthOfDay <= currentMonth
-      );
-    });
-  };
-
-  const [og, setOg] = useState(null);
-  const hashnodeLink = "https://saipranay47.hashnode.dev/";
-  const getOG = async (url) => {
-    try {
-      const response = await fetch(
-        `https://jsonlink.io/api/extract?url=${url}`
-      );
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.log(error);
-      return null;
-    }
-  };
-
-  useEffect(() => {
-    getOG(hashnodeLink).then((data) => {
-      setOg(data);
-    });
-  }, []);
 
   return (
     <div>
@@ -136,61 +99,10 @@ function ProfileEditable({ auth }) {
             <p className="text-2xl">{auth.email}</p>
           </div>
         </div>
-        <div className="lg:ml-20 my-16  flex gap-10 w-full max-lg:flex-wrap ">
-          <div className="md:h-[200px] w-full sm:max-w-md bg-white  p-6 flex flex-wrap-reverse  justify-between items-center rounded-xl shadow-sm hover:shadow-md border-gray-300 border-[1px] cursor-pointer hover:opacity-90">
-            <div className="flex flex-col justify-between items-start md:h-full max-md:mt-10">
-              <img
-                src={github}
-                alt=""
-                className="h-[40px] w-auto rounded-lg shadow-md"
-              />
-              <p className=" text-lg font-semibold text-black max-md:my-2">
-                {auth.name}
-              </p>
-              <p className=" text-sm text-gray-500 max-w-[150px] md:truncate mb-2">
-                https://github.com/saipranay47
-              </p>
-              <button className="bg-[#eeeeeef3] text-black rounded-md py-[4px] px-[20px] font-medium shadow-sm hover:shadow-md border-gray-300 border-[1px]">
-                Follow
-              </button>
-            </div>
-
-            <GitHubCalendar
-              username="saipranay47"
-              hideColorLegend
-              hideTotalCount
-              transformData={selectLastHalfYear}
-              colorScheme="light"
-              hideMonthLabels
-            />
-          </div>
-          {og && (
-            <div className="flex-wrap-reverse md:h-[200px] sm:max-w-md w-full bg-white  p-6 flex  justify-between items-center rounded-xl shadow-sm hover:shadow-md border-gray-300 border-[1px] cursor-pointer hover:opacity-90">
-              <div className="flex flex-col justify-between items-start md:h-full">
-                <img
-                  src={hashnode}
-                  alt=""
-                  className="h-[40px] w-auto rounded-lg mb-2 p-1 shadow-md"
-                />
-                <p className=" text-lg font-semibold text-black ">{og.title}</p>
-                <p className=" text-sm text-gray-500 max-w-[150px] md:truncate mb-2">
-                  {og.url}
-                </p>
-                <button className="bg-[#eeeeeef3] text-black rounded-md py-[4px] px-[20px] font-medium shadow-sm hover:shadow-md border-gray-300 border-[1px]">
-                  Follow
-                </button>
-              </div>
-              <img
-                src={og.images[0]}
-                alt=""
-                className="md:h-full max-md:w-full object-cover rounded-xl aspect-1/4 max-md:mb-8"
-              />
-            </div>
-          )}
-        </div>
+        <Widgets auth={auth}/>
       </Container>
     </div>
   );
 }
 
-export default ProfileEditable;
+export default ProfileTop;

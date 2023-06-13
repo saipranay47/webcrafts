@@ -31,14 +31,7 @@ function Footer() {
               height={27}
             />
           </a>
-          <a href="https://vercel.com/" target="_blank">
-            <img
-              src="/vercel.svg"
-              alt="Vercel logo-type"
-              width={88}
-              height={20}
-            />
-          </a>
+          
         </div>
       </footer>
     </div>

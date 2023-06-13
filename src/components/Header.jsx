@@ -11,6 +11,7 @@ import { useUser } from "../hooks/user";
 import avatar from "../images/avatar.svg";
 import { useNavigate } from "react-router-dom";
 import Search from "./Search";
+import { NavLink } from "react-router-dom";
 
 function ProfileMenu() {
   const [SignedIn, setSignedIn] = useState(false);
@@ -198,11 +199,11 @@ function MobileNavigation() {
                 className="absolute inset-x-0 top-full mt-4 origin-top space-y-4 rounded-2xl bg-[#10101D] p-6 text-lg tracking-tight text-slate-100 shadow-xl ring-1 ring-slate-900/5"
               >
                 <li>
-                  <Link to="#CraftsShowcase">
+                  <NavLink to="/craftsshowcase">
                     <span className="block w-full" onClick={() => close()}>
                       Crafts Showcase
                     </span>
-                  </Link>
+                  </NavLink>
                 </li>
                 {/* <li>
                   <Link to="#Resources">
@@ -212,11 +213,11 @@ function MobileNavigation() {
                   </Link>
                 </li> */}
                 <li>
-                  <Link to="#CraftedDevs">
+                  <NavLink to="/crafteddevs">
                     <span className="block w-full" onClick={() => close()}>
                       Crafted Devs
                     </span>
-                  </Link>
+                  </NavLink>
                 </li>
                 {signedIn ? (
                   <li className="border-t border-slate-300/40 pt-4">
@@ -293,11 +294,20 @@ export function Header() {
               </Link>
             </li>
             <li className=" ml-7 hidden md:block">
-              <Link to="#Crafts Showcase">
-                <span className=" text-slate-300 hover:text-white hover:underline decoration-wavy text-base">
+              <NavLink
+                to="/craftsshowcase"
+                className={({ isActive, isPending }) =>
+                  isPending
+                    ? "pending"
+                    : isActive
+                    ? "underline decoration-wavy"
+                    : "hover:underline decoration-wavy"
+                }
+              >
+                <span className=" text-slate-300 hover:text-white text-base">
                   Crafts Showcase
                 </span>
-              </Link>
+              </NavLink>
             </li>
             {/* <li className="ml-6 hidden md:block">
               <Link to="#Resources">
@@ -307,11 +317,20 @@ export function Header() {
               </Link>
             </li> */}
             <li className="ml-6 hidden md:block">
-              <Link to="#CraftedDevs">
-                <span className=" text-slate-300 hover:text-white hover:underline decoration-wavy text-base whitespace-nowrap">
+              <NavLink
+                to="/crafteddevs"
+                className={({ isActive, isPending }) =>
+                  isPending
+                    ? "pending"
+                    : isActive
+                    ? "underline decoration-wavy"
+                    : "hover:underline decoration-wavy"
+                }
+              >
+                <span className=" text-slate-300 hover:text-white text-base whitespace-nowrap">
                   Crafted Devs
                 </span>
-              </Link>
+              </NavLink>
             </li>
           </ul>
           <Search />

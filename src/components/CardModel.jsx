@@ -130,7 +130,6 @@ function CardModel({
       .catch((err) => console.log(err));
   };
 
-
   return (
     <div className="relative">
       <div className="sm:absolute top-10 right-[40px] pt-[40px] md:w-[40px] md:h-full  h-[40px] hidden sm:block">
@@ -163,7 +162,7 @@ function CardModel({
             </div>
           )}
 
-          <Share />
+          <Share id={craftid} />
           <div className="h-[40px] w-[40px] p-[14px] bg-gray-200 rounded-full flex justify-center items-center cursor-pointer">
             <CommentComponent />
           </div>
@@ -232,8 +231,10 @@ function CardModel({
                           close
                         </button>
                         <ShareComponent
-                          url="https://saipranay.vercel.app"
-                          text="check out my portfolio"
+                          url={`${
+                            import.meta.env.VITE_PUBLIC_BASE_URL
+                          }/craft/${craftid}`}
+                          text="check out this amazing craft on webcrafts"
                         />
                       </div>
                     </div>

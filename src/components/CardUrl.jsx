@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { storage } from "../utils/appwrite";
 import { Transition } from "@headlessui/react";
 
-function CardUrl({ title, description, tags, username, image, ...props }) {
+function CardUrl({ title, description, tags, username, image, profilepic, ...props }) {
   const [isHovered, setIsHovered] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
 
@@ -76,7 +76,7 @@ function CardUrl({ title, description, tags, username, image, ...props }) {
       <div className="h-[60px] px-4 flex justify-between items-center">
         <div className="w-full h-full flex items-center">
           <img
-            src="https://cdna.artstation.com/p/assets/images/images/021/935/626/large/irina-nikiforova-purple.jpg?1573507084"
+            src={profilepic}
             alt="user"
             className="h-[26px] w-auto rounded-full object-cover transition group-hover:grayscale-[50%]"
           />

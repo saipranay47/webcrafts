@@ -9,7 +9,7 @@ const ShareButton = () => (
   </div>
 );
 
-const Share = () => (
+const Share = ({ id }) => (
   <Popover>
     {({ open }) => (
       <>
@@ -33,8 +33,8 @@ const Share = () => (
             <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 bg-white">
               <div className="p-4">
                 <ShareComponent
-                  url="https://saipranay.vercel.app"
-                  text="Check out my portfolio"
+                  url={`${import.meta.env.VITE_PUBLIC_BASE_URL}/craft/${id}`}
+                  text="check out this amazing craft on webcrafts"
                 />
               </div>
             </div>

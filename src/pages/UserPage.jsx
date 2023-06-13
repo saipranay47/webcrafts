@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useUser } from "../hooks/user";
 import { Link } from "react-router-dom";
 import { Header } from "../components/Header";
-import ProfileEditable from "../components/ProfileTop";
+import ProfileTop from "../components/ProfileTop";
 import UserCrafts from "../abc/UserCrafts";
 import axios from "axios";
 import { useParams } from "react-router-dom";
@@ -49,7 +49,7 @@ function UserPage() {
       <div className="bg-[#10101D] text-white w-full h-full min-h-screen">
         {data ? (
           <div>
-            <ProfileEditable auth={data} />
+            <ProfileTop auth={data} />
             {/* Render userCrafts here */}
             <hr className=" mt-10 mb-20" />
             <UserCrafts userid={id} />

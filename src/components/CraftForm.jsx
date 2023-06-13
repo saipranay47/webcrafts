@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Card from "./Card";
 import placeholder from "../images/placeholder.png";
 import CardUrl from "./CardUrl";
+import profilePlaceholder from "../images/profilePlaceholder.jpeg";
 
 function CraftForm({ auth, craft }) {
   const navigate = useNavigate();
@@ -22,6 +23,14 @@ function CraftForm({ auth, craft }) {
   const [suggestedTags, setSuggestedTags] = useState([]);
 
   const [newTags, setNewTags] = useState([]);
+
+  const [photo, setPhoto] = useState(placeholder);
+
+  useEffect(() => {
+    if(auth){
+      setPhoto(auth.prefs?.photo);
+    }
+  }, [auth]);
 
   const getTags = async () => {
     try {
@@ -765,6 +774,7 @@ function CraftForm({ auth, craft }) {
                 description={values.description}
                 image={URL.createObjectURL(image)}
                 username={values.username}
+                profilepic={photo}
               />
             ) : imageUrl ? (
               <CardUrl
@@ -773,6 +783,7 @@ function CraftForm({ auth, craft }) {
                 description={values.description}
                 image={imageUrl}
                 username={values.username}
+                profilepic={photo}
               />
             ) : (
               <CardUrl
@@ -781,6 +792,7 @@ function CraftForm({ auth, craft }) {
                 description={values.description}
                 image={placeholder}
                 username={values.username}
+                profilepic={photo}
               />
             )}
           </div>
