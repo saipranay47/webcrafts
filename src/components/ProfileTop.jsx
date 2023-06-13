@@ -14,6 +14,7 @@ function ProfileTop({ auth }) {
   console.log(auth);
   const [Crafts, setuserCrafts] = useState([]);
   const [totalLikes, setTotalLikes] = useState(0);
+  
   useEffect(() => {
     if (auth) {
       console.log(auth);

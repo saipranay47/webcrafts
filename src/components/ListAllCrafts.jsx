@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { databases } from "../utils/appwrite";
 import Card from "./Card";
 import { Query } from "appwrite";
+import loadinganimation from "../images/loadinganimation.gif";
 
 function ListAllCrafts() {
   const [crafts, setCrafts] = useState([]);
@@ -30,7 +31,10 @@ function ListAllCrafts() {
   return (
     <div className="flex gap-5 justify-center items-center flex-wrap">
       {loading ? (
-        <h1>Loading...</h1>
+        <div className="min-h-[70vh] flex justify-center items-center flex-col">
+          <img src={loadinganimation} alt="Loading animation" />
+          <h1>Loading...</h1>
+        </div>
       ) : (
         crafts.map((craft) => (
           <Card
@@ -46,6 +50,7 @@ function ListAllCrafts() {
             userid={craft.uid}
             likes={craft.likes}
             likeCount={craft.likeCount}
+            comments={craft.comments}
           />
         ))
       )}

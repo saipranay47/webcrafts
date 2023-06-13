@@ -32,6 +32,7 @@ function CardModel({
   likes,
   likeCount,
   profilePic,
+  comments,
   ...props
 }) {
   const [liked, setLiked] = useState(false);
@@ -48,6 +49,7 @@ function CardModel({
     userid,
     likes,
     likeCount,
+    comments,
   });
   const [likeLoading, setLikeLoading] = useState(false);
   const [isModelOpen, setIsModelOpen] = useState(false);
@@ -164,7 +166,11 @@ function CardModel({
 
           <Share id={craftid} />
           <div className="h-[40px] w-[40px] p-[14px] bg-gray-200 rounded-full flex justify-center items-center cursor-pointer">
-            <CommentComponent />
+            <CommentComponent
+              craftid={craftid}
+              comments={comments}
+              user={user}
+            />
           </div>
         </div>
       </div>
@@ -178,11 +184,13 @@ function CardModel({
 
               <div className="right-[40px] lg:w-[40px] md:h-full  h-[40px] hidden max-sm:block">
                 <div className="sticky top-20 flex md:flex-col gap-4 h-[40px] ">
-                  <img
-                    src={profilePic}
-                    alt=""
-                    className="h-[40px] w-[40px] rounded-full"
-                  />
+                  <Link to={`/users/${userid}`}>
+                    <img
+                      src={profilePic}
+                      alt=""
+                      className="h-[40px] w-[40px] rounded-full"
+                    />
+                  </Link>
 
                   {user && user.$id == userid && (
                     <div className="flex justify-end">
@@ -243,7 +251,11 @@ function CardModel({
                     <img src={save} className="opacity-60 h-full" />
                   </div> */}
                   <div className="h-[40px] p-[14px] bg-gray-200 rounded-full flex justify-center items-center cursor-pointer">
-                    <CommentComponent />
+                    <CommentComponent
+                      craftid={craftid}
+                      comments={comments}
+                      user={user}
+                    />
                   </div>
                 </div>
               </div>
@@ -320,7 +332,7 @@ function CardModel({
               <br />
               <p className="text-base md:text-xl">{description}</p>
               <br />
-              <div className="flex gap-2 pb-3 md:pb-6">
+              <div className="flex gap-2 pb-3 md:pb-6 flex-wrap">
                 {tags.map((tag) => (
                   <a
                     className="active:scale-[0.95] transition-all"

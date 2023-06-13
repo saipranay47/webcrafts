@@ -108,6 +108,7 @@ function Craft() {
           likes={craft?.likes}
           likeCount={craft?.likeCount}
           profilePic={profilepic}
+          comments={craft?.comments}
         />
       )}
 

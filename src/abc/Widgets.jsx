@@ -9,6 +9,8 @@ import { Link } from "react-router-dom";
 function Widgets({ auth }) {
   const { user } = useUser();
   const [placeholder, setPlaceholder] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const selectLastHalfYear = (contributions) => {
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth();
@@ -42,12 +44,10 @@ function Widgets({ auth }) {
   };
 
   useEffect(() => {
-    
-    if(auth.prefs.github || auth.prefs.hashnode){
+    if (auth.prefs.github || auth.prefs.hashnode) {
       setPlaceholder(false);
-    }else{
-      if(user?.$id === auth.$id)
-      setPlaceholder(true);
+    } else {
+      if (user?.$id === auth.$id) setPlaceholder(true);
     }
 
     getOG(hashnodeLink).then((data) => {

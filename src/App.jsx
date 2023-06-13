@@ -18,6 +18,7 @@ import TagsSearch from "./pages/TagsSearch";
 import EditCraft from "./pages/EditCraft";
 import CraftedDevs from "./pages/CraftedDevs";
 import Landing from "./pages/Landing";
+import SearchPage from "./pages/SearchPage";
 
 function App() {
   return (
@@ -31,11 +32,12 @@ function App() {
           <Route path="/new" element={<New />} />
           <Route path="/editcraft/:id" element={<EditCraft />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/crafteddevs" element={<CraftedDevs />} />
+          {/* <Route path="/crafteddevs" element={<CraftedDevs />} /> */}
           <Route path="/profileupdate" element={<EditProfile />} />
           <Route path="/users/:id" element={<UserPage />} />
           <Route path="/craft/:id" element={<Craft />} />
           <Route path="/search" element={<SearchResults />} />
+          <Route path="/searchpage" element={<SearchPage />} />
           <Route exact path="/tags" element={<Tags />} />
           <Route exact path="/tags/:keyword" element={<TagsSearch />} />
         </Routes>

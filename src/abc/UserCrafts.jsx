@@ -58,6 +58,7 @@ export default function UserCrafts({ userid, limit = false}) {
           userid={craft.uid}
           likes={craft.likes}
           likeCount={craft.likeCount}
+          comments={craft.comments}
         />
       ))}
     </div>

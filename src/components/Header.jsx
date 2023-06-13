@@ -5,7 +5,7 @@ import clsx from "clsx";
 import { Button } from "./Button";
 import { ButtonLink } from "./Button";
 import { Container } from "./Container.jsx";
-import logoIcon  from "../images/logoIcon.svg";
+import logoIcon from "../images/logoIcon.svg";
 import { Link } from "react-router-dom";
 import { useUser } from "../hooks/user";
 import avatar from "../images/avatar.svg";
@@ -26,9 +26,8 @@ function ProfileMenu() {
     }
   }, [user]);
 
-  const { logout } = useUser();
-
   const navigate = useNavigate();
+  const { logout } = useUser();
 
   const handleLogout = async () => {
     await logout();
@@ -140,6 +139,9 @@ function MobileNavigation() {
     }
   }, [user]);
 
+  const { logout } = useUser();
+  const navigate = useNavigate();
+
   const handleLogout = async () => {
     await logout();
     alert("logout");
@@ -213,25 +215,35 @@ function MobileNavigation() {
                   </Link>
                 </li> */}
                 <li>
-                  <NavLink to="/crafteddevs">
+                  {/* <NavLink to="/crafteddevs">
                     <span className="block w-full" onClick={() => close()}>
                       Crafted Devs
                     </span>
-                  </NavLink>
+                  </NavLink> */}
                 </li>
                 {signedIn ? (
                   <li className="border-t border-slate-300/40 pt-4">
-                    <Link to="/user">
-                      <div className="h-[32px] w-auto flex gap-3 items-center">
-                        <img
-                          src={user.prefs.photo}
-                          alt=""
-                          className="h-[32px] w-[32px] rounded-full"
-                        />
+                    <Link to="/profile">
+                      <div className="h-[32px] w-auto flex gap-3 items-center mb-2">
                         {user && (
-                          <span className="block w-full text-xl">
-                            {user.name}
-                          </span>
+                          <div className="flex items-center space-x-4">
+                            {user.prefs.photo ? (
+                              <img
+                                src={user.prefs.photo}
+                                alt=""
+                                className="h-10 w-10 rounded-full"
+                              />
+                            ) : (
+                              <svg
+                                className=" text-gray-300 w-10 h-10 bg-gray-500 rounded-full object-cover"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                              </svg>
+                            )}
+                            <span className="text-xl">{user.name}</span>
+                          </div>
                         )}
                       </div>
                     </Link>
@@ -254,7 +266,7 @@ function MobileNavigation() {
                   </li>
                 ) : (
                   <li className="border-t border-slate-300/40 pt-4">
-                    <Link to="/sign-in">
+                    <Link to="/login">
                       <span className="block w-full">Sign in</span>
                     </Link>
                   </li>
@@ -317,7 +329,7 @@ export function Header() {
               </Link>
             </li> */}
             <li className="ml-6 hidden md:block">
-              <NavLink
+              {/* <NavLink
                 to="/crafteddevs"
                 className={({ isActive, isPending }) =>
                   isPending
@@ -330,11 +342,39 @@ export function Header() {
                 <span className=" text-slate-300 hover:text-white text-base whitespace-nowrap">
                   Crafted Devs
                 </span>
-              </NavLink>
+              </NavLink> */}
             </li>
           </ul>
-          <Search />
-          <ul className="flex items-center">
+          <Search
+            className="hidden sm:flex justify-center flex-1 "
+            formw = ""
+            innerclass=" -translate-x-[30%] md:translate-x-0 max-w-[250%] block absolute z-20 top-[0.7rem] rounded-lg w-[28rem] md:max-w-full bg-white dark:bg-zinc-900 shadow-[0px_1px_3px_0px_rgba(15,23,42,0.1),0_35px_60px_-15px_rgba(15,23,42,0.3)] overflow-hidden transition-all ease-out duration-150"
+          />
+          <ul className="flex items-center justify-center gap-1">
+            <li className="hidden max-sm:block">
+              <ButtonLink
+                color="blue"
+                className="max-md:text-[12px] px-[7px] py-[6px] mr-10px"
+                href="/searchpage"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                  className="w-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                  />
+                </svg>
+              </ButtonLink>
+            </li>
+            <br />
             <li className="ml-auto md:ml-8">
               <ButtonLink
                 href="/new"

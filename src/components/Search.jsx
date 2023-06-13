@@ -5,7 +5,7 @@ import profilePlaceholder from "../images/profilePlaceholder.jpeg";
 import { databases, storage } from "../utils/appwrite";
 import { Query } from "appwrite";
 
-function Search() {
+function Search({innerclass, formw, ...props}) {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [searchString, setSearchString] = useState("");
   const [users, setUsers] = useState([]);
@@ -159,27 +159,14 @@ function Search() {
     }
   };
 
-  const tagsData = [
-    "nature",
-    "landscape",
-    "art",
-    "website",
-    "nextjs",
-    "react",
-    "tailwind css",
-  ];
-
-  const jsonData = {
-    users: userData,
-    crafts: craftData,
-    tags: tagsData,
-  };
-
   return (
-    <div className="hidden md:flex justify-center flex-1">
-      <div className="opacity-100 transition-all relative z-20 mt-[4px]">
+    <div className=" flex justify-center flex-1" {...props}>
+      <div
+        className="opacity-100 transition-all relative z-20 mt-[4px]"
+        style={{ width: formw }}
+      >
         <form method="get" action="/search">
-          <div className="relative flex items-center group">
+          <div className="relative flex items-center group px-3 w-full">
             <div className="flex absolute w-5 mx-3 pointer-events-none text-slate-400">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -202,7 +189,7 @@ function Search() {
               name="keyword"
               autoComplete="off"
               placeholder="Search..."
-              className="bg-zinc-900/50 py-1.5 pl-10 outline-none rounded-full text-zinc-500 placeholder:text-zinc-500 focus:text-slate-200 border border-slate-900/10 transition-all w-full lg:w-96 max-w-full shadow-[inset_0_0_2px_rgba(255,255,255,0.4)]"
+              className="bg-zinc-900/50 py-1.5 pl-10 outline-none rounded-full text-zinc-500 placeholder:text-zinc-500 focus:text-slate-200 border border-slate-900/10 transition-all w-full md:w-96 max-w-full shadow-[inset_0_0_2px_rgba(255,255,255,0.4)] m-auto"
               value={searchString}
               onFocus={handleInputFocus}
               onChange={(e) => setSearchString(e.target.value)}
@@ -218,10 +205,7 @@ function Search() {
             })}
             onClick={(e) => e.stopPropagation()}
           >
-            <div
-              className=" -translate-x-[30%] lg:translate-x-0 max-w-[250%]  hidden md:block absolute z-20 top-[0.7rem] rounded-lg w-[28rem] lg:max-w-full bg-white dark:bg-zinc-900 shadow-[0px_1px_3px_0px_rgba(15,23,42,0.1),0_35px_60px_-15px_rgba(15,23,42,0.3)] overflow-hidden transition-all ease-out duration-150"
-              // style={{ height: "623.609px" }}
-            >
+            <div className={innerclass}>
               <div className="flex flex-col select-none divide-y divide-slate-200 dark:divide-zinc-800">
                 {userData.length != 0 && (
                   <div className="flex flex-col p-6 gap-2">
@@ -244,14 +228,11 @@ function Search() {
                             >
                               <picture>
                                 {user.avatar == null ? (
-                                  <img
-                                    alt={`Avatar of ${user.username}`}
-                                    src={profilePlaceholder}
-                                    loading="eager"
-                                    decoding="sync"
-                                    className="rounded-full block object-cover"
-                                    style={{ width: 24, height: 24 }}
-                                  />
+                                  <div className="flex items-center justify-center w-[24px] h-[24px] bg-gray-200 rounded-full">
+                                    <span className="text-gray-500 mb-[3px]">
+                                      {user.username.charAt(0)}
+                                    </span>
+                                  </div>
                                 ) : (
                                   <img
                                     alt={`Avatar of ${user.username}`}
@@ -405,7 +386,7 @@ function Search() {
       </div>
       {isPanelOpen && (
         <div
-          className="hidden md:block fixed inset-0 h-screen z-10 origin-top bg-black transform opacity-70"
+          className="block fixed inset-0 h-screen z-10 origin-top bg-black transform opacity-70"
           onClick={handleInputBlur}
         ></div>
       )}

@@ -1,6 +1,6 @@
 export function Input({ id, label, type = "text", ...props }) {
   return (
-    <div>
+    <div className="w-full">
       {label && (
         <label
           htmlFor={id}

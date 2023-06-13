@@ -27,8 +27,12 @@ function CraftForm({ auth, craft }) {
   const [photo, setPhoto] = useState(placeholder);
 
   useEffect(() => {
-    if(auth){
-      setPhoto(auth.prefs?.photo);
+    if (auth) {
+      if (auth.prefs?.photo) {
+        setPhoto(auth.prefs.photo);
+      } else {
+        setPhoto(profilePlaceholder);
+      }
     }
   }, [auth]);
 
@@ -485,9 +489,28 @@ function CraftForm({ auth, craft }) {
           >
             Cancel
           </ButtonLink>
-          <Button variant="solid" color="blue" className="rounded-md ">
+          {/* <Button variant="solid" color="blue" className="rounded-md ">
             Continue
-          </Button>
+          </Button> */}
+          {craft ? (
+            <Button
+              variant="solid"
+              color="blue"
+              className="rounded-md "
+              onClick={handleUpdate}
+            >
+              Continue
+            </Button>
+          ) : (
+            <Button
+              variant="solid"
+              color="blue"
+              className="rounded-md "
+              onClick={handleSubmit}
+            >
+              Continue
+            </Button>
+          )}
         </div>
       </nav>
 

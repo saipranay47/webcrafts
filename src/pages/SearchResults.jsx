@@ -61,6 +61,7 @@ function SearchResults() {
                 userid={craft.uid}
                 likes={craft.likes}
                 likeCount={craft.likeCount}
+                comments={craft.comments}
               />
             ))
           )}

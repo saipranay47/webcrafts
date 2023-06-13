@@ -17,6 +17,7 @@ function Card({
   craftid,
   likes,
   likeCount,
+  comments,
   ...props
 }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -137,7 +138,7 @@ function Card({
             )}
           </Transition>
         </article>
-        <div className="h-[60px] px-4 flex justify-between items-center">
+        <div className="h-[60px] px-5 flex justify-between items-center">
           <div className="w-full h-full flex items-center">
             <img
               src={profilepic}
@@ -156,7 +157,7 @@ function Card({
               </svg>
               {likeCount}
             </span>
-            <span className="flex justify-center items-center gap-1">
+            {/* <span className="flex justify-center items-center gap-1">
               <svg width="21" height="21" viewBox="0 0 21 21" fill="none">
                 <path
                   d="M10.5 7.875C11.9497 7.875 13.125 9.05025 13.125 10.5C13.125 11.9497 11.9497 13.125 10.5 13.125C9.05025 13.125 7.875 11.9497 7.875 10.5C7.875 9.05025 9.05025 7.875 10.5 7.875Z"
@@ -168,7 +169,7 @@ function Card({
                 />
               </svg>
               000
-            </span>
+            </span> */}
           </span>
         </div>
       </div>
@@ -194,6 +195,7 @@ function Card({
               likes={likes}
               likeCount={likeCount}
               profilePic={profilepic}
+              comments={comments}
             />
           </div>
         </div>

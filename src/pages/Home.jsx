@@ -24,33 +24,8 @@ function Home() {
   return (
     <div className="min-h-screen">
       <Header />
-      <Container className="bg-[#10101D] text-white max-w-full">
-        {/* {user ? (
-          <h1>Hello {user.name} 👋</h1>
-        ) : (
-          <div>
-            <ul>
-              <li>
-                <Link to="/sign-up">Register</Link>
-              </li>
-              <li>
-                <Link to="/sign-in">Login</Link>
-              </li>
-            </ul>
-          </div>
-        )} */}
+      <Container className="bg-[#10101D] text-white max-w-full mb-24">
 
-        {/* <button onClick={handleLogout}>Log out</button> */}
-        {/* <div className="flex gap-5 justify-center items-center flex-wrap">
-          <Card
-            title="developer portfolio"
-            tags={hashtags}
-            description="Hi, I am Sai Pranay a design-minded front-end developer who loves
-              to create beautiful interfaces and experiences"
-            image="https://1.bp.blogspot.com/__3OWaeX1H-s/TNwj4ppfyFI/AAAAAAAAErI/mQLf8eBoJ0o/s1600/random1.jpg"
-            username={user.name}
-          />
-        </div> */}
         <br />
         <br />
         <br />
